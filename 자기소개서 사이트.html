@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>하성현 | SecOps 커리어 관리 대시보드</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+    body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif; }
+    @media print {
+      .no-print { display: none !important; }
+      body { background: white !important; color: black !important; padding: 0 !important; }
+      .print-container { border: none !important; box-shadow: none !important; padding: 0 !important; max-width: 100% !important; }
+      .tab-pane { display: block !important; margin-bottom: 2rem; }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 antialiased p-3 sm:p-6 selection:bg-blue-600 selection:text-white">
+
+  <!-- Main Container -->
+  <div class="max-w-6xl mx-auto space-y-6 print-container">
+    
+    <!-- Top Header -->
+    <header class="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2 flex-wrap">
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">IT 보안운영 (SecOps) Specialist</span>
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">경력 2년 7개월</span>
+          <span class="text-xs text-slate-400">|</span>
+          <span class="text-xs text-slate-600">010-0927-08539</span>
+          <span class="text-xs text-slate-600">tjdgus5487@naver.com</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1 tracking-tight">하성현 커리어 관리 포털</h1>
+        <p class="text-xs sm:text-sm text-slate-500 mt-1">
+          온프레미스 인프라 보안 · 체크포인트 방화벽 & WAF 최적화 · 개인정보(Privacy-i)/DLP · Splunk SIEM
+        </p>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-2 no-print self-stretch md:self-auto justify-end">
+        <button onclick="window.print()" class="px-3.5 py-2 text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl border border-slate-300 transition flex items-center gap-1.5 shadow-xs">
+          🖨️ PDF/인쇄
+        </button>
+        <button onclick="copyAllActiveContent()" class="px-4 py-2 text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition flex items-center gap-1.5 shadow-sm">
+          📋 현재 화면 전체 복사
+        </button>
+      </div>
+    </header>
+
+    <!-- Key Metrics Ribbon -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 no-print">
+      <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
+        <div class="text-xs text-slate-500 font-medium">체크포인트 방화벽</div>
+        <div class="text-xl font-extrabold text-blue-600 mt-0.5">일 180만 건</div>
+        <div class="text-[11px] text-slate-500 mt-0.5">175개 정책 최적화(최소권한)</div>
+      </div>
+      <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
+        <div class="text-xs text-slate-500 font-medium">WAF 웹 공격 방어</div>
+        <div class="text-xl font-extrabold text-indigo-600 mt-0.5">방화벽 연동 차단</div>
+        <div class="text-[11px] text-slate-500 mt-0.5">인젝션 식별 즉시 블랙리스트</div>
+      </div>
+      <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
+        <div class="text-xs text-slate-500 font-medium">Privacy-i 단독 설계</div>
+        <div class="text-xl font-extrabold text-emerald-600 mt-0.5">전사 2,000명</div>
+        <div class="text-[11px] text-slate-500 mt-0.5">에이전트 100% 안정화 안착</div>
+      </div>
+      <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
+        <div class="text-xs text-slate-500 font-medium">DLP 데이터 반출 차단</div>
+        <div class="text-xl font-extrabold text-amber-600 mt-0.5">분기 22건 차단</div>
+        <div class="text-[11px] text-slate-500 mt-0.5">정규식 튜닝 & 팀장 CC제</div>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-200 pb-2 no-print">
+      <nav class="flex space-x-1.5 flex-wrap gap-y-1.5" aria-label="Tabs">
+        <button onclick="switchTab('target')" id="tab-btn-target" class="tab-btn px-4 py-2 text-xs font-semibold rounded-lg bg-blue-600 text-white shadow-xs transition">
+          🎯 산업별 맞춤 전략 (금융/항공/대기업)
+        </button>
+        <button onclick="switchTab('resume')" id="tab-btn-resume" class="tab-btn px-4 py-2 text-xs font-medium rounded-lg text-slate-600 hover:text-slate-900 hover:bg-white transition">
+          📋 마스터 이력서 (국/영문)
+        </button>
+        <button onclick="switchTab('career')" id="tab-btn-career" class="tab-btn px-4 py-2 text-xs font-medium rounded-lg text-slate-600 hover:text-slate-900 hover:bg-white transition">
+          💼 마스터 경력기술서 (국/영문)
+        </button>
+        <button onclick="switchTab('star')" id="tab-btn-star" class="tab-btn px-4 py-2 text-xs font-medium rounded-lg text-slate-600 hover:text-slate-900 hover:bg-white transition">
+          💡 자소서 STAR 스토리풀
+        </button>
+        <button onclick="switchTab('template')" id="tab-btn-template" class="tab-btn px-4 py-2 text-xs font-medium rounded-lg text-slate-600 hover:text-slate-900 hover:bg-white transition">
+          📝 기업 공통문항 템플릿
+        </button>
+      </nav>
+
+      <!-- Quick Search Box -->
+      <div class="relative w-full sm:w-64">
+        <input type="text" id="searchInput" onkeyup="filterContent()" placeholder="키워드 검색 (WAF, 180만, DLP 등)" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-blue-500">
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- TAB 1: 산업별 맞춤 전략 (Default) -->
+    <!-- ======================================================== -->
+    <div id="tab-target" class="tab-pane space-y-4">
+      
+      <!-- Sub-Tabs for Industries -->
+      <div class="flex items-center gap-2 p-1.5 bg-slate-200/70 rounded-xl w-fit no-print">
+        <button onclick="switchIndustry('finance')" id="ind-btn-finance" class="ind-btn px-3 py-1.5 text-xs font-bold rounded-lg bg-blue-600 text-white shadow-xs transition">
+          🏦 금융권 보안 (핀테크/은행/증권)
+        </button>
+        <button onclick="switchIndustry('airline')" id="ind-btn-airline" class="ind-btn px-3 py-1.5 text-xs font-medium rounded-lg text-slate-600 hover:text-slate-900 transition">
+          ✈️ 항공사 (무중단/글로벌/승객)
+        </button>
+        <button onclick="switchIndustry('enterprise')" id="ind-btn-enterprise" class="ind-btn px-3 py-1.5 text-xs font-medium rounded-lg text-slate-600 hover:text-slate-900 transition">
+          🏢 대기업 (전사 거버넌스/IP보호)
+        </button>
+      </div>
+
+      <!-- 1-1. 금융권 뷰 -->
+      <div id="ind-finance" class="ind-pane space-y-4">
+        <div class="bg-blue-50 border border-blue-200 rounded-xl p-4">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-sm text-blue-900 flex items-center gap-2">
+              <span>🏦</span> 금융권 지원 핵심 공략 포인트
+            </h3>
+            <button onclick="copySnippet('finance-guide')" class="text-xs bg-blue-100 hover:bg-blue-200 text-blue-700 font-semibold px-2.5 py-1 rounded-md transition">복사하기</button>
+          </div>
+          <div id="finance-guide" class="text-xs text-blue-800 mt-2 space-y-1">
+            <p>• <b>전자금융감독규정 준수:</b> 체크포인트 Any 정책 175건 전수 정리로 '최소 권한의 원칙(Least Privilege)' 확립</p>
+            <p>• <b>핀테크 인프라 실무:</b> 다날(Danal) IT 인프라팀에서의 전자결제 트랜잭션 보안 운영 경험</p>
+            <p>• <b>금융 고객정보 유출 차단:</b> 주민번호/계좌번호 DLP 정규식 튜닝 및 무단 반출 22건 탐지·차단</p>
+            <p>• <b>웹 금융거래 방어:</b> WAF 인젝션 공격 식별 즉시 체크포인트 방화벽 블랙리스트 객체 실시간 연동 격리</p>
+            <p>• <b>통합 감사 추적:</b> Splunk 기반 7종 솔루션 syslog 중앙 수집 및 실시간 Alert 체계</p>
+          </div>
+        </div>
+
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+            <div>
+              <h2 class="text-base font-bold text-slate-900">[금융권 특화] 경력기술서 전문</h2>
+              <p class="text-xs text-slate-500">전자금융감독규정 및 결제 인프라 안정성에 초점을 맞춘 맞춤 양식입니다.</p>
+            </div>
+            <button onclick="copySnippet('finance-text')" class="no-print text-xs bg-blue-600 text-white font-semibold px-3.5 py-1.5 rounded-lg hover:bg-blue-700 transition">
+              본문 복사 📋
+            </button>
+          </div>
+          <div id="finance-text" class="text-xs text-slate-800 leading-relaxed space-y-3 font-mono bg-slate-50 p-4 rounded-xl border border-slate-200">
+<p><b>[금융권 맞춤 요약]</b><br>
+- 전자결제(다날) 인프라 기반 실무형 보안 엔지니어: 전자금융 및 결제 트랜잭션 환경에서 체크포인트 방화벽, WAF, 침해 대응을 직접 수행하며 전자금융 서비스의 연속성과 규제 준수 역량을 입증했습니다.<br>
+- 전자금융감독규정 기반의 접근 통제 고도화: 체크포인트 방화벽의 비대화된 Any 정책을 전수 정리하고 175건의 불필요 정책을 영구 제거하여 전자금융감독규정의 핵심 원칙인 '최소 권한의 원칙'을 확립했습니다.<br>
+- 고객 금융정보 및 개인신용정보 유출 원천 차단: Privacy-i 2,000대 전사 단독 구축 및 DLP 정규식 패턴 고도화를 통해 계좌/주민번호 유출 시도 22건을 정밀 차단하고 출력물 워터마크 통제 체계를 완성했습니다.<br>
+- 전자금융 대외 웹 채널 보호: WAF 페이로드 심층 분석을 통해 금융 결제창 및 웹 서비스를 겨냥한 SQL Injection 등 웹 공격을 식별하고 방화벽 블랙리스트 객체 연동으로 즉각 차단했습니다.</p>
+
+<p><b>[프로젝트 1. 체크포인트 방화벽 운영 및 전자금융 접근통제 최적화]</b><br>
+• 전자금융감독규정 제11조 및 제13조(접근통제) 준수를 위한 Any 정책 전수 조사 및 최소 권한 대역/포트 재설계<br>
+• 일평균 180만 건의 트래픽 분석 및 3~6개월 미사용 정책 175건 영구 제거<br>
+• VPN 및 결제 연동 정상 대용량 트래픽 화이트리스팅을 통해 일 50만 건 불필요 차단 이벤트 필터링 및 선제 차단율 27.7% 유지</p>
+
+<p><b>[프로젝트 2. 금융 대외 서비스 타깃 WAF 공격 방어 및 방화벽 연동 차단]</b><br>
+• 일 267건 WAF 이벤트 및 OWASP Top 10 인젝션(일 41건) 페이로드 정밀 분석<br>
+• 실제 정탐(2.4%) 식별 즉시 공격 IP를 체크포인트 방화벽 블랙리스트 객체(Blacklist Object)로 실시간 반영하여 2차 공격 원천 차단<br>
+• 비즈니스 파라미터 예외 튜닝으로 전자금융 결제 서비스 무중단 가용성 보장</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1-2. 항공사 뷰 -->
+      <div id="ind-airline" class="ind-pane space-y-4 hidden">
+        <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-4">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-sm text-indigo-900 flex items-center gap-2">
+              <span>✈️</span> 항공사 지원 핵심 공략 포인트
+            </h3>
+            <button onclick="copySnippet('airline-guide')" class="text-xs bg-indigo-100 hover:bg-indigo-200 text-indigo-700 font-semibold px-2.5 py-1 rounded-md transition">복사하기</button>
+          </div>
+          <div id="airline-guide" class="text-xs text-indigo-800 mt-2 space-y-1">
+            <p>• <b>24/365 무중단 가용성:</b> 일 180만 건 대용량 트래픽 처리 속 175개 룰 정리로 방화벽 연산 부하 경감</p>
+            <p>• <b>글로벌 승객 PII 보호:</b> 여권번호/결제정보 Privacy-i 전사 2,000명 단독 배포 및 DLP 22건 차단</p>
+            <p>• <b>국경 간 사이버 위협 방어:</b> 방화벽 국가별 Geo-blocking 통제 및 WAF 웹 예약망 실시간 보호</p>
+            <p>• <b>분산 단말 관리:</b> 공항/지사/본사 간 VPN 트래픽 화이트리스팅 및 탑승권/인쇄물 워터마크 통제</p>
+          </div>
+        </div>
+
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+            <div>
+              <h2 class="text-base font-bold text-slate-900">[항공사 특화] 경력기술서 전문</h2>
+              <p class="text-xs text-slate-500">24/365 무중단 예약·발권 시스템 보호 및 글로벌 승객 데이터 관리에 최적화된 양식입니다.</p>
+            </div>
+            <button onclick="copySnippet('airline-text')" class="no-print text-xs bg-indigo-600 text-white font-semibold px-3.5 py-1.5 rounded-lg hover:bg-indigo-700 transition">
+              본문 복사 📋
+            </button>
+          </div>
+          <div id="airline-text" class="text-xs text-slate-800 leading-relaxed space-y-3 font-mono bg-slate-50 p-4 rounded-xl border border-slate-200">
+<p><b>[항공 도메인 맞춤 요약]</b><br>
+- 무중단 항공 서비스 가용성을 뒷받침하는 인프라 보안 전문가: 24시간 365일 멈춤 없이 가동되어야 하는 대규모 서비스 환경에서 체크포인트 방화벽 및 WAF를 안정적으로 운영해 온 실무 엔지니어입니다.<br>
+- 예약/발권 대외 채널 방어 및 방화벽 연동 격리: 글로벌 웹 예약망을 노리는 OWASP 인젝션 공격을 WAF 페이로드 수준에서 식별하고, 공격자 IP를 체크포인트 방화벽 블랙리스트 객체로 실시간 연동 차단하여 추가 공격을 원천 차단했습니다.<br>
+- 대용량 트래픽 최적화(Rule Cleanup): 일평균 180만 건의 트래픽을 처리하는 환경에서 Any 정책 및 유휴 정책 175건을 과감히 정비하고 VPN/백업 대용량 트래픽을 화이트리스팅하여 시스템 연산 부하를 획기적으로 낮췄습니다.<br>
+- 승객 여권·결제정보 등 대규모 민감 데이터 보호: 2,000명 규모 전사 단말에 Privacy-i 도입을 단독 주도하여 개인정보 무단 방치를 차단하고, DLP 튜닝으로 무단 반출 22건을 탐지·차단했습니다.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1-3. 대기업 뷰 -->
+      <div id="ind-enterprise" class="ind-pane space-y-4 hidden">
+        <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-sm text-emerald-900 flex items-center gap-2">
+              <span>🏢</span> 대기업/그룹사 지원 핵심 공략 포인트
+            </h3>
+            <button onclick="copySnippet('enterprise-guide')" class="text-xs bg-emerald-100 hover:bg-emerald-200 text-emerald-700 font-semibold px-2.5 py-1 rounded-md transition">복사하기</button>
+          </div>
+          <div id="enterprise-guide" class="text-xs text-emerald-800 mt-2 space-y-1">
+            <p>• <b>2,000명 전사 거버넌스:</b> Privacy-i 단독 정책 설계 및 충돌 없는 100% 에이전트 안착</p>
+            <p>• <b>공격 표면(Attack Surface) 축소:</b> 룰 과다(Rule Sprawl) 해소를 위한 175건 정책 정리 및 최적화</p>
+            <p>• <b>핵심 기술자산(IP) 보호:</b> DLP 정규식 튜닝 및 팀장 참조(CC) 소명제로 무단 반출 22건 차단</p>
+            <p>• <b>엔터프라이즈 SIEM 통합:</b> 7종 이상 솔루션 syslog의 Splunk 통합 모니터링 체계 구축</p>
+          </div>
+        </div>
+
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+            <div>
+              <h2 class="text-base font-bold text-slate-900">[대기업 특화] 경력기술서 전문</h2>
+              <p class="text-xs text-slate-500">대규모 인프라 거버넌스와 핵심 기밀(IP) 유출 방어에 초점을 맞춘 양식입니다.</p>
+            </div>
+            <button onclick="copySnippet('enterprise-text')" class="no-print text-xs bg-emerald-600 text-white font-semibold px-3.5 py-1.5 rounded-lg hover:bg-emerald-700 transition">
+              본문 복사 📋
+            </button>
+          </div>
+          <div id="enterprise-text" class="text-xs text-slate-800 leading-relaxed space-y-3 font-mono bg-slate-50 p-4 rounded-xl border border-slate-200">
+<p><b>[대기업 맞춤 요약]</b><br>
+- 대규모 엔터프라이즈 환경에 검증된 보안 엔지니어: 온프레미스 2,000명 임직원 조직을 대상으로 체크포인트 방화벽, WAF, Privacy-i, DLP, Splunk 등 10여 종의 인프라 및 엔드포인트 보안 체계를 안정적으로 구축·운영해 왔습니다.<br>
+- 주도적인 전사 거버넌스 기획 및 안착: 솔루션 도입 시 단순 기술 지원에 머무르지 않고, 2,000명 전사 대상의 개인정보 보호(Privacy-i) 정책 설계를 단독 주도하여 충돌 없이 100% 안정화시킨 추진력을 보유하고 있습니다.<br>
+- 데이터 기반의 공격 표면(Attack Surface) 최소화: 일 180만 건의 트래픽을 처리하는 체크포인트 방화벽에서 Any 정책과 3~6개월 미사용 정책 175건을 전수 정비하여 인프라 연산 성능 향상 및 보안성 제고를 동시에 달성했습니다.<br>
+- 핵심 기술자산(IP) 유출 방어: DLP 정규식 고도화와 팀장 참조(CC) 소명제 도입으로 분기 22건의 무단 반출을 적발·차단하고, 인쇄물 워터마크 강제화로 온·오프라인 전방위 데이터 유출을 통제했습니다.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- TAB 2: 마스터 이력서 (국/영문 전환) -->
+    <!-- ======================================================== -->
+    <div id="tab-resume" class="tab-pane space-y-4 hidden">
+      <div class="flex items-center gap-2 no-print">
+        <button onclick="switchResumeLang('ko')" id="res-btn-ko" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-blue-600 text-white transition">국문 이력서</button>
+        <button onclick="switchResumeLang('en')" id="res-btn-en" class="px-3 py-1.5 text-xs font-medium rounded-lg text-slate-600 bg-white border border-slate-200 hover:text-slate-900 transition">영문 이력서 (English)</button>
+      </div>
+
+      <!-- Korean Resume -->
+      <div id="res-ko" class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+          <h2 class="text-base font-bold text-slate-900">국문 마스터 이력서</h2>
+          <button onclick="copySnippet('res-ko-content')" class="no-print text-xs bg-blue-600 text-white font-semibold px-3 py-1.5 rounded-lg hover:bg-blue-700 transition">전체 복사 📋</button>
+        </div>
+        <div id="res-ko-content" class="text-xs leading-relaxed space-y-4 text-slate-800">
+          <div>
+            <h3 class="text-sm font-bold text-blue-600">하성현 (Ha, Sung-hyun) | IT 보안운영 (SecOps) Specialist</h3>
+            <p class="text-slate-500">010-0927-08539 | tjdgus5487@naver.com | 경기도 하남시 | 1996.07.17 (만 30세) · 군필</p>
+          </div>
+          <div class="border-t border-slate-100 pt-3">
+            <h4 class="font-bold text-slate-900 mb-1">PROFESSIONAL SUMMARY</h4>
+            <p>온프레미스(On-Premise) 엔터프라이즈 환경(임직원 약 2,000명 규모)에서 체크포인트 차세대 방화벽, WAF, NAC, EDR(SEP/CrowdStrike), DLP, Privacy-i, Splunk 등 6종 이상의 보안 솔루션을 직접 구축 및 운영해 온 2년 7개월 경력의 정보보안 엔지니어입니다.</p>
+          </div>
+          <div class="border-t border-slate-100 pt-3">
+            <h4 class="font-bold text-slate-900 mb-1">CORE SKILLS</h4>
+            <p>• <b>네트워크/인프라:</b> 체크포인트(Checkpoint) 차세대 방화벽, WAF, Proxy, NAC, IDS, Geo-blocking, Rule Cleanup<br>
+            • <b>데이터 보안:</b> Privacy-i(개인정보 보호), DLP, DRM, 출력보안, 고유식별정보 암호화/격리<br>
+            • <b>SIEM & 로그분석:</b> Splunk (통합 로그 수집, 대시보드 구축, Alert 룰 설계), Syslog 정밀 분석<br>
+            • <b>위협 탐지:</b> OWASP Top 10 (SQLi, Command Injection) 페이로드 분석, 위협 인텔리전스 연동 차단</p>
+          </div>
+          <div class="border-t border-slate-100 pt-3">
+            <h4 class="font-bold text-slate-900 mb-1">CAREER EXPERIENCE</h4>
+            <p><b>코니퍼 (Conifer) 대리 · IT 보안운영팀 (2025.06 ~ 재직 중)</b><br>
+            - 전사 10종 이상 엔터프라이즈 보안 솔루션 운영 및 기술 지원<br>
+            - Privacy-i 신규 도입 정책 단독 설계 및 약 2,000명 전사 에이전트 100% 안정화<br>
+            - DLP 정규식 패턴 고도화 및 팀장 CC 승인제로 분기 22건 무단 반출 탐지·차단<br>
+            - WAF 일 267건 이벤트 분석 및 OWASP 인젝션 식별 즉시 체크포인트 방화벽 블랙리스트 객체 실시간 연동 차단<br>
+            - 전 보안 솔루션 syslog의 Splunk 통합 모니터링 파이프라인 구축</p>
+            <p class="mt-2"><b>다날 (Danal) 사원 · IT 인프라팀 (2023.10 ~ 2025.01)</b><br>
+            - 전자결제 인프라 보안엔지니어로서 정보보안 인프라 운영 및 유지보수 수행<br>
+            - 체크포인트 방화벽 일 180만 건 로그 분석 및 175개 정책 최적화(Rule Cleanup)<br>
+            - VPN/백업 대용량 화이트리스팅으로 일 50만 건 불필요 차단 필터링 및 선제 차단율 27.7% 유지<br>
+            - 방화벽 Geo-blocking 및 WAF 기반 웹 공격 실시간 방어</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- English Resume -->
+      <div id="res-en" class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4 hidden">
+        <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+          <h2 class="text-base font-bold text-slate-900">영문 마스터 이력서 (Resume)</h2>
+          <button onclick="copySnippet('res-en-content')" class="no-print text-xs bg-blue-600 text-white font-semibold px-3 py-1.5 rounded-lg hover:bg-blue-700 transition">전체 복사 📋</button>
+        </div>
+        <div id="res-en-content" class="text-xs leading-relaxed space-y-4 text-slate-800 font-mono">
+          <div>
+            <h3 class="text-sm font-bold text-blue-600">Sunghyun Ha | IT Security Operations (SecOps) Specialist</h3>
+            <p class="text-slate-500">+82-10-0927-08539 | tjdgus5487@naver.com | Gyeonggi-do, South Korea</p>
+          </div>
+          <div class="border-t border-slate-100 pt-3">
+            <h4 class="font-bold text-slate-900 mb-1">PROFESSIONAL SUMMARY</h4>
+            <p>Information Security Engineer with 2+ years of hands-on experience securing enterprise on-premise environments (~2,000 employees). Proven track record operating Checkpoint Next-Gen Firewalls, WAF, Splunk (SIEM), Privacy-i, DLP, EDR (CrowdStrike/SEP), and NAC.</p>
+          </div>
+          <div class="border-t border-slate-100 pt-3">
+            <h4 class="font-bold text-slate-900 mb-1">KEY ACHIEVEMENTS</h4>
+            <p>• Pruned 175 redundant policies from Checkpoint Firewalls handling 1.8M daily logs; sustained 27.7% proactive block rate via threat intelligence.<br>
+            • Triaged 267 daily WAF alerts and dynamically pushed verified injection IPs directly into Checkpoint Firewall Blacklist Objects.<br>
+            • Solely architected enterprise Privacy-i rollout across ~2,000 endpoints with automated PII quarantine/encryption.<br>
+            • Hardened DLP regex logic and initiated manager-CC approvals, catching 22 exfiltration attempts per quarter.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- TAB 3: 마스터 경력기술서 -->
+    <!-- ======================================================== -->
+    <div id="tab-career" class="tab-pane space-y-4 hidden">
+      <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+          <div>
+            <h2 class="text-base font-bold text-slate-900">국문 마스터 경력기술서</h2>
+            <p class="text-xs text-slate-500">모든 세부 프로젝트 내용이 온전히 수록된 표준 마스터 버전입니다.</p>
+          </div>
+          <button onclick="copySnippet('career-full-text')" class="no-print text-xs bg-blue-600 text-white font-semibold px-3 py-1.5 rounded-lg hover:bg-blue-700 transition">전체 복사 📋</button>
+        </div>
+        <div id="career-full-text" class="text-xs leading-relaxed space-y-4 text-slate-800">
+          <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+            <h4 class="font-bold text-blue-700 text-sm">프로젝트 1. 전사 개인정보 보호 솔루션(Privacy-i) 신규 도입 및 단독 정책 설계</h4>
+            <p class="mt-1">• <b>배경:</b> 약 2,000명 임직원 PC 내 방치된 주민등록번호 등 고유식별정보 관리 및 법적 컴플라이언스 준수<br>
+            • <b>내용:</b> 정책 설계 단독 주도, 사내 PC 전수 에이전트 배포 및 안정화 완료, 비인가 파일 자동 격리/암호화 프로세스 수립<br>
+            • <b>성과:</b> 2,000대 에이전트 100% 안착 및 고유식별정보 무단 방치율 제로화 달성</p>
+          </div>
+          <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+            <h4 class="font-bold text-blue-700 text-sm">프로젝트 2. 체크포인트(Checkpoint) 방화벽 일 180만 건 로그 분석 및 정책 최적화(Rule Cleanup)</h4>
+            <p class="mt-1">• <b>배경:</b> 비대화된 룰(Rule Sprawl) 해소 및 일 180만 건 트래픽 처리 방화벽 연산 부하 경감<br>
+            • <b>내용:</b> Any 정책 전수 조사 및 최소 권한 대역 재설계, 3~6개월 미사용 정책 175건 정리, VPN/백업 대용량 화이트리스팅<br>
+            • <b>성과:</b> 불필요 정책 175개 제거, 악성 IP 선제 차단율 27.7% 유지, 일 50만 건 불필요 차단 이벤트 필터링 및 분석 효율 25% 개선</p>
+          </div>
+          <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+            <h4 class="font-bold text-blue-700 text-sm">프로젝트 3. WAF 웹 보안 이벤트 정밀 분석 및 방화벽 실시간 연동 차단 체계 구축</h4>
+            <p class="mt-1">• <b>배경:</b> 대외 웹 서비스 타깃 인젝션 공격에 대한 선제적 방어 및 2차 추가 침투 차단<br>
+            • <b>내용:</b> 일 267건 WAF 이벤트 및 OWASP 인젝션(일 41건) 페이로드 정밀 분석, 정상 트래픽 오탐 분리<br>
+            • <b>성과:</b> 식별된 공격 IP를 체크포인트 방화벽 블랙리스트 객체(Blacklist Object)로 실시간 반영하여 네트워크 전반 2차 공격 원천 차단</p>
+          </div>
+          <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+            <h4 class="font-bold text-blue-700 text-sm">프로젝트 4. DLP 정책 고도화 및 팀장 참조(CC) 승인제 도입</h4>
+            <p class="mt-1">• <b>배경:</b> 내부 기밀 데이터 무단 반출 차단 및 기존 DLP 오탐으로 인한 현업 불만 해소<br>
+            • <b>내용:</b> 체크섬 검증 로직을 포함한 정규식 패턴 고도화, 대용량 파일 발송 시 직속 팀장 CC 강제화 및 소명 체계 도입<br>
+            • <b>성과:</b> 분기 기준 개인정보 유출 시도 22건 정밀 적발 및 차단</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- TAB 4: 자소서 STAR 스토리풀 -->
+    <!-- ======================================================== -->
+    <div id="tab-star" class="tab-pane space-y-4 hidden">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        
+        <!-- Story 1 -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="px-2.5 py-1 rounded-md text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200">기술 전문성 & 위협 차단</span>
+            <button onclick="copySnippet('star-text-1')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-2.5 py-1 rounded-md transition">복사 📋</button>
+          </div>
+          <h3 class="font-bold text-sm text-slate-900">WAF 페이로드 분석 & 방화벽 블랙리스트 객체 실시간 연동 차단</h3>
+          <div id="star-text-1" class="text-xs text-slate-700 space-y-1.5 bg-slate-50 p-3.5 rounded-xl border border-slate-200 font-mono">
+            <p><b>[S - 상황]</b> 일평균 267건의 WAF 이벤트 속에서 특수문자 오탐으로 관제 피로도가 심화되고 실제 공격을 놓칠 위험 상존</p>
+            <p><b>[T - 과제]</b> 일평균 41건의 OWASP 인젝션 페이로드를 정밀 검증하고 진성 위협 발생 시 네트워크 전반에서 격리하는 체계 수립</p>
+            <p><b>[A - 행동]</b> HTTP Body 파라미터를 직접 디코딩하여 실제 정탐을 식별하고, 해당 공격 IP를 체크포인트 방화벽의 블랙리스트 객체(Blacklist Object)로 실시간 반영 연동</p>
+            <p><b>[R - 성과]</b> 2차 추가 침투 시도를 원천 차단하고 정상 비즈니스 트래픽은 예외 처리 튜닝하여 관제 건전성 확보</p>
+          </div>
+        </div>
+
+        <!-- Story 2 -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="px-2.5 py-1 rounded-md text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">인프라 최적화 & 분석력</span>
+            <button onclick="copySnippet('star-text-2')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-2.5 py-1 rounded-md transition">복사 📋</button>
+          </div>
+          <h3 class="font-bold text-sm text-slate-900">방화벽 일 180만 건 분석과 175개 정책 최적화 (Rule Cleanup)</h3>
+          <div id="star-text-2" class="text-xs text-slate-700 space-y-1.5 bg-slate-50 p-3.5 rounded-xl border border-slate-200 font-mono">
+            <p><b>[S - 상황]</b> 수백 개 방화벽 룰 누적으로 일 180만 건 트래픽 처리 시 CPU 연산 부하 증가 및 공격 표면 확대</p>
+            <p><b>[T - 과제]</b> 인프라 가용성 저해 없이 과다 허용 룰을 정비하여 시스템 부하 경감 및 최소 권한 원칙 확립</p>
+            <p><b>[A - 행동]</b> Any 정책 전수 조사, 최근 3~6개월 히트 수 0인 미사용 정책 선별, 사내 VPN/백업 대용량 트래픽 화이트리스팅 분리</p>
+            <p><b>[R - 성과]</b> 총 175개 불필요 정책 제거 완료, 악성 IP 선제 차단율 27.7% 유지, 정탐 분석 효율 25% 개선</p>
+          </div>
+        </div>
+
+        <!-- Story 3 -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="px-2.5 py-1 rounded-md text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">추진력 & 프로젝트 리딩</span>
+            <button onclick="copySnippet('star-text-3')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-2.5 py-1 rounded-md transition">복사 📋</button>
+          </div>
+          <h3 class="font-bold text-sm text-slate-900">전사 2,000명 규모 Privacy-i 단독 정책 설계 및 안정화</h3>
+          <div id="star-text-3" class="text-xs text-slate-700 space-y-1.5 bg-slate-50 p-3.5 rounded-xl border border-slate-200 font-mono">
+            <p><b>[S - 상황]</b> 2,000명 규모 사내 PC 내 고유식별정보(주민등록번호 등) 무단 방치 및 감사 리스크 대두</p>
+            <p><b>[T - 과제]</b> 업무 마찰 없이 신규 개인정보 솔루션 에이전트를 전사 배포하고 정기 점검 체계 확립</p>
+            <p><b>[A - 행동]</b> 정책 설계를 단독으로 주도, 파일럿 그룹을 통해 드라이버 충돌을 사전 예방하고 비인가 파일 자동 격리/암호화 3단계 프로세스 수립</p>
+            <p><b>[R - 성과]</b> 전사 2,000여 대 단말 100% 안정화 안착 및 고유식별정보 무단 방치율 제로화 달성</p>
+          </div>
+        </div>
+
+        <!-- Story 4 -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="px-2.5 py-1 rounded-md text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">커뮤니케이션 & 내부통제</span>
+            <button onclick="copySnippet('star-text-4')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-2.5 py-1 rounded-md transition">복사 📋</button>
+          </div>
+          <h3 class="font-bold text-sm text-slate-900">DLP 정규식 패턴 튜닝 및 팀장 참조(CC) 소명제 도입</h3>
+          <div id="star-text-4" class="text-xs text-slate-700 space-y-1.5 bg-slate-50 p-3.5 rounded-xl border border-slate-200 font-mono">
+            <p><b>[S - 상황]</b> DLP 오탐으로 인한 결재 지연 불만 증가 및 고객 개인정보 외부 무단 반출 위험 병존</p>
+            <p><b>[T - 과제]</b> 현업 업무 효율을 해치지 않는 합리적 통제 체계를 마련하여 실제 유출 시도 차단</p>
+            <p><b>[A - 행동]</b> 체크섬 검증 로직 반영 정규식 튜닝으로 오탐 최소화, 민감자료 외부 발송 시 팀장 참조(CC) 강제화 및 사후 소명 프로세스 정착</p>
+            <p><b>[R - 성과]</b> 분기 기준 무단 반출 22건 정밀 적발·차단 및 임직원의 자발적 보안 인식 고취</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- TAB 5: 기업 공통문항 템플릿 -->
+    <!-- ======================================================== -->
+    <div id="tab-template" class="tab-pane space-y-4 hidden">
+      <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-5">
+        <div class="border-b border-slate-200 pb-3">
+          <h2 class="text-base font-bold text-slate-900">기업 공통 4대 자소서 문항 템플릿</h2>
+          <p class="text-xs text-slate-500">채용 사이트 서류 접수 시 복사하여 즉시 활용 가능한 실무 맞춤 모범 답안입니다.</p>
+        </div>
+
+        <!-- Question 1 -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-xs sm:text-sm text-blue-700">문항 1. 지원동기 (당사에 기여하고자 하는 바)</h4>
+            <button onclick="copySnippet('q-ans-1')" class="no-print text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-2.5 py-1 rounded-md transition">답안 복사 📋</button>
+          </div>
+          <div id="q-ans-1" class="text-xs text-slate-700 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-200">
+            [무중단 인프라의 가용성과 빈틈없는 보안 거버넌스를 동시에 완성하는 엔지니어]<br>
+            귀사는 수많은 고객과 비즈니스가 1분 1초의 중단 없이 신뢰 속에서 연결되어야 하는 핵심 인프라를 운영하고 있습니다. 이러한 환경에서 정보보안은 단순한 규제 준수를 넘어 비즈니스의 영속성을 보장하는 최후의 방어선이어야 한다고 확신합니다.<br><br>
+            저는 임직원 2,000명 규모의 온프레미스 환경에서 체크포인트 차세대 방화벽, WAF, Privacy-i, DLP 등 핵심 보안 솔루션들을 직접 운영하며 시스템의 가용성과 철저한 보안 통제 사이의 균형을 체득해 왔습니다. 일평균 180만 건의 트래픽을 처리하는 환경에서 175건의 불필요한 방화벽 정책을 정비하여 시스템 부하를 경감시키고 공격 표면을 축소한 경험과, WAF 인젝션 공격 식별 즉시 방화벽 블랙리스트로 연동 격리한 기술적 집요함은 귀사의 방어 체계를 한층 견고하게 만들 것입니다. 귀사의 보안 인프라가 대외 위협으로부터 한 치의 흔들림 없이 가동될 수 있도록 선제적이고 능동적인 SecOps 체계를 구현하겠습니다.
+          </div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-xs sm:text-sm text-blue-700">문항 2. 직무 전문성 및 본인만의 차별화된 핵심 역량</h4>
+            <button onclick="copySnippet('q-ans-2')" class="no-print text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-2.5 py-1 rounded-md transition">답안 복사 📋</button>
+          </div>
+          <div id="q-ans-2" class="text-xs text-slate-700 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-200">
+            [전체 방어선을 유기적으로 연결하는 다계층(Multi-Layer) 보안 운영 역량]<br>
+            저의 가장 큰 강점은 개별 솔루션의 고립된 운영에 머무르지 않고, 엔드포인트부터 경계선 네트워크까지 하나의 유기적인 방어 파이프라인으로 연결해 내는 실무 설계력입니다.<br><br>
+            첫째, 네트워크 인프라 최적화 및 정밀 위협 대응 역량입니다. 체크포인트 방화벽을 운영하며 일 180만 건의 로그 모니터링 속에서 불필요한 정책 175건을 과감히 정비하여 시스템 처리 성능 향상과 25%의 정탐 분석 효율성 개선을 이뤄냈습니다. 또한 WAF를 통해 OWASP Top 10 인젝션 페이로드를 정밀 분석하여 실제 공격 IP를 체크포인트 방화벽 블랙리스트 객체로 실시간 연동 차단하는 입체적 방어 체계를 구축했습니다.<br><br>
+            둘째, 데이터 보안 거버넌스의 주도적 안착 역량입니다. 2,000명 규모 전사 Privacy-i 솔루션 도입 시 정책 설계를 단독 주도하여 개인정보 파일의 정기 점검과 격리/암호화 프로세스를 100% 안착시켰습니다. 나아가 DLP 정규식 튜닝과 팀장 참조 소명제를 통해 분기 22건의 개인정보 무단 반출을 탐지·차단했습니다. 이러한 End-to-End 실무 경험을 바탕으로 귀사의 보안 자산을 빈틈없이 지켜내겠습니다.
+          </div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-xs sm:text-sm text-blue-700">문항 3. 한계 극복 및 문제해결/협업 경험</h4>
+            <button onclick="copySnippet('q-ans-3')" class="no-print text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-2.5 py-1 rounded-md transition">답안 복사 📋</button>
+          </div>
+          <div id="q-ans-3" class="text-xs text-slate-700 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-200">
+            [기술적 분석과 소통을 통해 보안 통제와 업무 효율의 균형점을 찾다]<br>
+            보안 솔루션 운영 시 가장 큰 도전 과제는 '강력한 보안 통제'와 '현업의 비즈니스 생산성' 사이의 마찰을 해소하는 것이었습니다. 사내 개인정보 유출 방지를 위해 DLP 통제를 강화하던 당시, 외부 업무 메일 발송 시 발생하는 오탐으로 인해 현업 부서의 결재 지연 불만이 급증하는 문제가 발생했습니다.<br><br>
+            저는 무조건적인 차단만을 고수하지 않고 문제를 근본적으로 해결하기 위해 두 가지 방안을 실행했습니다. 첫째, 탐지 룰에 단순 문자열 매칭이 아닌 체크섬과 문맥을 검증하는 정밀 정규식(Regex)을 적용하여 오탐을 현저히 낮췄습니다. 둘째, 민감 파일 발송 시 결재 승인 대기로 인한 업무 마비를 줄이고자 '직속 팀장 참조(CC) 강제화 및 사후 소명 프로세스'를 신설했습니다.<br><br>
+            그 결과, 불필요한 결재 대기 시간을 대폭 단축하여 현업의 반발을 해소함과 동시에 분기 기준 22건의 실제 유출 시도를 정밀 탐지·차단하는 성과를 거두었습니다. 임직원 스스로 보안 의식을 갖추도록 유도함으로써 '통제의 대상'을 '보안의 동반자'로 변화시킨 값진 경험이었습니다.
+          </div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-xs sm:text-sm text-blue-700">문항 4. 입사 후 포부</h4>
+            <button onclick="copySnippet('q-ans-4')" class="no-print text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-2.5 py-1 rounded-md transition">답안 복사 📋</button>
+          </div>
+          <div id="q-ans-4" class="text-xs text-slate-700 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-200">
+            [선제적 위협 차단 체계를 완성하고 차세대 보안 아키텍처를 리드하는 전문가]<br>
+            입사 후 첫 1년은 귀사의 네트워크 토폴로지와 보안 장비 정책을 신속히 파악하여 단 하나의 보안 사각지대도 발생하지 않도록 인프라 현행화에 집중하겠습니다. 특히 기존에 축적한 체크포인트 방화벽 Rule Cleanup 노하우와 WAF 페이로드 분석 경험을 접목하여, 미사용 정책을 조기 정비하고 위협 인텔리전스 연동을 강화해 귀사의 공격 표면을 최소화하겠습니다.<br><br>
+            나아가 3년 내에는 축적된 Splunk 로그 분석 역량을 고도화하여 이상 징후 탐지부터 침해 대응까지의 시간을 최소화하는 SecOps 모니터링 자동화에 기여하겠습니다. 급변하는 IT 환경에 발맞추어 온프레미스 운영 안정성을 공고히 유지하는 한편, 클라우드 및 제로 트러스트(Zero Trust) 보안 아키텍처로의 확장을 적극 학습하고 주도하여 귀사가 믿고 의지할 수 있는 핵심 보안 엔지니어로 성장하겠습니다.
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Notification Toast for Copying -->
+    <div id="copyToast" class="fixed bottom-6 right-6 bg-slate-900 text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-2xl transition-opacity duration-300 opacity-0 pointer-events-none flex items-center gap-2 border border-slate-700 z-50">
+      <span>✅ 클립보드에 성공적으로 복사되었습니다!</span>
+    </div>
+
+  </div>
+
+  <script>
+    // Tab Switching
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-pane').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('bg-blue-600', 'text-white', 'shadow-xs');
+        btn.classList.add('text-slate-600');
+      });
+
+      document.getElementById('tab-' + tabId).classList.remove('hidden');
+      const activeBtn = document.getElementById('tab-btn-' + tabId);
+      activeBtn.classList.add('bg-blue-600', 'text-white', 'shadow-xs');
+      activeBtn.classList.remove('text-slate-600');
+    }
+
+    // Industry Sub-Tab Switching
+    function switchIndustry(indId) {
+      document.querySelectorAll('.ind-pane').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.ind-btn').forEach(btn => {
+        btn.classList.remove('bg-blue-600', 'bg-indigo-600', 'bg-emerald-600', 'text-white', 'shadow-xs');
+        btn.classList.add('text-slate-600');
+      });
+
+      const pane = document.getElementById('ind-' + indId);
+      pane.classList.remove('hidden');
+
+      const btn = document.getElementById('ind-btn-' + indId);
+      btn.classList.remove('text-slate-600');
+      if (indId === 'finance') btn.classList.add('bg-blue-600', 'text-white', 'shadow-xs');
+      if (indId === 'airline') btn.classList.add('bg-indigo-600', 'text-white', 'shadow-xs');
+      if (indId === 'enterprise') btn.classList.add('bg-emerald-600', 'text-white', 'shadow-xs');
+    }
+
+    // Resume Language Switching
+    function switchResumeLang(lang) {
+      if (lang === 'ko') {
+        document.getElementById('res-ko').classList.remove('hidden');
+        document.getElementById('res-en').classList.add('hidden');
+        document.getElementById('res-btn-ko').classList.add('bg-blue-600', 'text-white');
+        document.getElementById('res-btn-ko').classList.remove('text-slate-600', 'bg-white');
+        document.getElementById('res-btn-en').classList.remove('bg-blue-600', 'text-white');
+        document.getElementById('res-btn-en').classList.add('text-slate-600', 'bg-white');
+      } else {
+        document.getElementById('res-en').classList.remove('hidden');
+        document.getElementById('res-ko').classList.add('hidden');
+        document.getElementById('res-btn-en').classList.add('bg-blue-600', 'text-white');
+        document.getElementById('res-btn-en').classList.remove('text-slate-600', 'bg-white');
+        document.getElementById('res-btn-ko').classList.remove('bg-blue-600', 'text-white');
+        document.getElementById('res-btn-ko').classList.add('text-slate-600', 'bg-white');
+      }
+    }
+
+    // Copy Snippet to Clipboard
+    function copySnippet(elementId) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      navigator.clipboard.writeText(el.innerText).then(() => {
+        showToast();
+      });
+    }
+
+    // Copy Active Tab Content
+    function copyAllActiveContent() {
+      const activePane = document.querySelector('.tab-pane:not(.hidden)');
+      if (activePane) {
+        navigator.clipboard.writeText(activePane.innerText).then(() => {
+          showToast();
+        });
+      }
+    }
+
+    // Toast Alert
+    function showToast() {
+      const toast = document.getElementById('copyToast');
+      toast.classList.remove('opacity-0');
+      toast.classList.add('opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0');
+      }, 2000);
+    }
+
+    // Filter Content by Keyword
+    function filterContent() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      if (!query) return;
+      // In a production local file, this can highlight or jump
+    }
+  </script>
+</body>
+</html>
